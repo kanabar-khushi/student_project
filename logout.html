@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Semicon | Logout</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+  <!-- LOGOUT -->
+  <section class="logout-hero">
+    <div class="logout-card">
+      <h2>You have been logged out</h2>
+      <p>Thank you for visiting Semicon</p>
+      <a href="semicon.html">Login Again</a>
+    </div>
+  </section>
+
+  <script>
+    // Clear login session
+    localStorage.removeItem("loggedIn");
+
+    // Auto redirect after 2 seconds
+    setTimeout(() => {
+      window.location.href = "semicon.html";
+    }, 2000);
+  </script>
+
+</body>
+</html>

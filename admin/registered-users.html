@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Dashboard | Registered Users</title>
+<link rel="stylesheet" href="admin-style.css">
+</head>
+<body onload="checkAdmin(); loadUsersTable()">
+
+<!-- ADMIN HEADER -->
+<nav class="navbar">
+  <h2>Admin Panel</h2>
+  <div class="nav-links">
+    <a href="../index.html" target="_blank">Client Home</a>
+    <a href="registered-users.html">Registered Users</a>
+    <a href="login-history.html">Login History</a>
+    <a href="orders.html">Orders</a>
+    <a href="admin.html">Products</a>
+    <button onclick="adminLogout()">Logout</button>
+  </div>
+</nav>
+
+<!-- REGISTERED USERS TABLE -->
+<div class="box">
+  <h3>Registered Users</h3>
+  <table id="usersTable">
+    <tr><th>Username</th><th>Email</th><th>Contact</th></tr>
+  </table>
+</div>
+
+<script>
+function loadUsersTable() {
+  let users = JSON.parse(localStorage.getItem("users")) || [];
+  const table = document.getElementById("usersTable");
+  table.innerHTML = "<tr><th>Username</th><th>Email</th><th>Contact</th></tr>";
+  users.forEach(u => {
+    table.innerHTML += `<tr>
+      <td>${u.username}</td>
+      <td>${u.email}</td>
+      <td>${u.contact}</td>
+    </tr>`;
+  });
+}
+</script>
+<script src="admin.js"></script>
+</body>
+</html>

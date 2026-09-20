@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Dashboard | Semicon</title>
+<link rel="stylesheet" href="admin-style.css">
+<style>
+body{font-family:Arial,sans-serif;margin:0;background:#f2f5fa;}
+.navbar{background:#0072ff;color:#fff;padding:12px 25px;display:flex;justify-content:space-between;align-items:center;}
+.navbar h2{margin:0;}
+.nav-links a, .nav-links button{margin-left:15px;color:white;text-decoration:none;padding:8px 12px;border:none;border-radius:5px;cursor:pointer;background:#005fcc;}
+.nav-links button:hover, .nav-links a:hover{opacity:0.8;}
+.box{max-width:1200px;margin:20px auto;background:#fff;padding:20px;border-radius:12px;box-shadow:0 5px 15px rgba(0,0,0,0.1);}
+table{width:100%;border-collapse:collapse;margin-top:10px;}
+table th, table td{padding:10px;border:1px solid #ccc;text-align:center;}
+table th{background:#0072ff;color:#fff;}
+button.edit-btn, button.delete-btn{padding:5px 10px;border:none;border-radius:5px;color:white;cursor:pointer;margin:2px;}
+button.edit-btn{background:#00c6ff;}
+button.delete-btn{background:#ff4c4c;}
+button.edit-btn:hover{opacity:0.8;}
+button.delete-btn:hover{opacity:0.8;}
+</style>
+</head>
+<body onload="loadAll()">
+
+<!-- ADMIN HEADER -->
+<nav class="navbar">
+  <h2>Admin Panel</h2>
+  <div class="nav-links">
+    <a href="../index.html" target="_blank">Client Home</a>
+    <a href="registered-users.html">Registered Users</a>
+    <a href="login-history.html">Login History</a>
+    <a href="orders.html">Orders</a>
+    <a href="admin.html">Products</a>
+    <button onclick="adminLogout()">Logout</button>
+  </div>
+</nav>
+
+<!-- Add / Update Product -->
+<section class="box">
+<h3>Add / Update Product</h3>
+<input id="pName" placeholder="Product Name">
+<input id="pPrice" placeholder="Price">
+<input id="pImage" placeholder="Image URL">
+<textarea id="pDesc" placeholder="Description"></textarea>
+<button id="saveBtn">Save Product</button>
+</section>
+
+<!-- Product List -->
+<section class="box">
+<h3>Products</h3>
+<table id="productTable">
+<thead>
+<tr>
+<th>#</th><th>Name</th><th>Price</th><th>Image</th><th>Action</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+</section>
+
+<!-- Orders -->
+<section class="box">
+<h3>Orders</h3>
+<table id="orderTable">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Username</th>
+      <th>Product</th>
+      <th>Price</th>
+      <th>Quantity</th>
+      <th>Total</th>
+      <th>Email</th>
+      <th>Contact</th>
+      <th>Address</th>
+      <th>Date</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+</section>
+
+<script>
+let products = JSON.parse(localStorage.getItem("products")) || [];
+let editIndex = -1;
+const saveBtn = document.getElementById("saveBtn");
+
+// ===== Load All =====
+function loadAll(){
+  displayProducts();
+  displayOrders();
+}
+
+// ===== Display Products =====
+function displayProducts(){
+  const tbody = document.querySelector("#productTable tbody");
+  tbody.innerHTML = "";
+
+  products.forEach((p,i)=>{
+    const row = document.createElement("tr");
+
+    const indexCell = document.createElement("td");
+    indexCell.textContent = i+1;
+
+    const nameCell = document.createElement("td");
+    nameCell.textContent = p.name;
+
+    const priceCell = document.createElement("td");
+    priceCell.textContent = "₹"+p.price;
+
+    const imageCell = document.createElement("td");
+    const img = document.createElement("img");
+    img.src = p.image;
+    img.width = 50;
+    imageCell.appendChild(img);
+
+    const actionCell = document.createElement("td");
+    const editBtn = document.createElement("button");
+    editBtn.className = "edit-btn";
+    editBtn.textContent = "Edit";
+    editBtn.addEventListener("click", ()=>editProduct(i));
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "delete-btn";
+    deleteBtn.textContent = "Delete";
+    deleteBtn.addEventListener("click", ()=>{
+      if(confirm("Are you sure you want to delete this product?")){
+        deleteProduct(i);
+      }
+    });
+
+    actionCell.appendChild(editBtn);
+    actionCell.appendChild(deleteBtn);
+
+    row.appendChild(indexCell);
+    row.appendChild(nameCell);
+    row.appendChild(priceCell);
+    row.appendChild(imageCell);
+    row.appendChild(actionCell);
+
+    tbody.appendChild(row);
+  });
+}
+
+// ===== Save / Update Product =====
+saveBtn.addEventListener("click", ()=>{
+  const name = document.getElementById("pName").value.trim();
+  const price = document.getElementById("pPrice").value.trim();
+  const image = document.getElementById("pImage").value.trim();
+
+  if(!name || !price){
+    alert("Please enter product name and price");
+    return;
+  }
+
+  const productObj = {name, price, image};
+
+  if(editIndex >=0){
+    products[editIndex] = productObj;
+    editIndex = -1;
+    saveBtn.textContent = "Save Product";
+  } else {
+    products.push(productObj);
+  }
+
+  localStorage.setItem("products", JSON.stringify(products));
+  displayProducts();
+
+  // Clear inputs
+  document.getElementById("pName").value="";
+  document.getElementById("pPrice").value="";
+  document.getElementById("pImage").value="";
+});
+
+// ===== Edit Product =====
+function editProduct(i){
+  editIndex = i;
+  const p = products[i];
+  document.getElementById("pName").value = p.name;
+  document.getElementById("pPrice").value = p.price;
+  document.getElementById("pImage").value = p.image;
+  saveBtn.textContent = "Update Product";
+}
+
+// ===== Delete Product =====
+function deleteProduct(i){
+  products.splice(i,1);
+  localStorage.setItem("products", JSON.stringify(products));
+  displayProducts();
+}
+
+// ===== Display Orders =====
+function displayOrders(){
+  const orders = JSON.parse(localStorage.getItem("orders")) || [];
+  const tbody = document.querySelector("#orderTable tbody");
+  tbody.innerHTML = "";
+  orders.forEach((o,i)=>{
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${i+1}</td>
+      <td>${o.username}</td>
+      <td>${o.product}</td>
+      <td>₹${o.price}</td>
+      <td>${o.quantity}</td>
+      <td>₹${o.total}</td>
+      <td>${o.email}</td>
+      <td>${o.contact}</td>
+      <td>${o.address}</td>
+      <td>${o.date}</td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+
+// ===== Admin Logout =====
+function adminLogout(){
+  alert("Logged out successfully!");
+  window.location.href="admin-login.html";
+}
+</script>
+
+</body>
+</html>

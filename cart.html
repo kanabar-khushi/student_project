@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Semicon | Cart</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+<link rel="stylesheet" href="css/style.css">
+
+body{margin:0;font-family:Arial,sans-serif;background:#f2f5fa;}
+
+.cart-container{max-width:700px;margin:25px auto;background:#fff;padding:20px;border-radius:12px;box-shadow:0 10px 25px rgba(0,0,0,0.1);}
+.bill-row{display:flex;justify-content:space-between;border-bottom:1px dashed #ccc;padding:10px 0;font-size:15px;}
+.bill-row strong{color:#0b1c2d;}
+.cart-container h3{margin-top:25px;margin-bottom:10px;}
+.cart-container input, textarea{width:100%;padding:10px;margin-bottom:12px;border-radius:8px;border:1px solid #ccc;font-size:14px;}
+.cart-buttons{display:flex;justify-content:center;gap:15px;margin-top:20px;}
+.cart-buttons button{padding:12px 28px;border:none;border-radius:25px;font-size:16px;cursor:pointer;background:linear-gradient(to right,#00c6ff,#0072ff);color:white;}
+@media(max-width:600px){.bill-row{font-size:14px}.cart-buttons{flex-direction:column}.cart-buttons button{width:100%;}}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+<h2>Semicon</h2>
+<ul>
+<li><a href="index.html">Home</a></li>
+<li><a href="about.html">About</a></li>
+<li><a href="prodcuts.html">Products</a></li>
+<li><a href="contact.html">Contact</a></li>
+<li><a href="feedback.html">Feedback</a></li>
+<li><a href="cart.html">Cart</a></li>
+<li><a href="logout.html">Logout</a></li>
+</ul>
+</nav>
+
+<!-- HERO -->
+  <section class="hero" style="background: url('images/cart.jpg') center/cover no-repeat;">
+    <div class="hero-content">
+      <h1>Advanced Semiconductor Technology</h1>
+      <a href="prodcuts.html" class="btn">Explore Products</a>
+    </div>
+  </section>
+
+<div class="cart-container">
+<div id="productBill"></div>
+<h3>User Details</h3>
+<input type="text" id="username" placeholder="Username">
+<input type="email" id="email" placeholder="Email">
+<input type="number" id="contact" placeholder="Contact Number">
+<textarea id="address" placeholder="Delivery Address"></textarea>
+
+<div class="cart-buttons">
+<button onclick="placeOrder()">Place Order</button>
+<button onclick="cancelOrder()">Cancel</button>
+</div>
+</div>
+
+<footer style="text-align:center;padding:15px;background:#0072ff;color:white;">© 2026 Semicon Technologies. All Rights Reserved.</footer>
+
+<script>
+const product = JSON.parse(localStorage.getItem('cart'));
+const bill = document.getElementById('productBill');
+
+if(product){
+  const qty = product.quantity || 1;
+  const total = product.price * qty;
+  bill.innerHTML=`
+  <div class="bill-row"><strong>Product</strong><span>${product.name}</span></div>
+  <div class="bill-row"><strong>Price</strong><span>₹${product.price}</span></div>
+  <div class="bill-row"><strong>Quantity</strong><span>${qty}</span></div>
+  <div class="bill-row"><strong>Total</strong><span>₹${total}</span></div>
+  `;
+}else{
+  bill.innerHTML="<p>No product added.</p>";
+}
+
+function placeOrder(){
+  const user={
+    username:document.getElementById('username').value,
+    email:document.getElementById('email').value,
+    contact:document.getElementById('contact').value,
+    address:document.getElementById('address').value
+  };
+  if(!product || !user.username || !user.email || !user.contact || !user.address){
+    alert('Please fill all details!');
+    return;
+  }
+  let orders = JSON.parse(localStorage.getItem('orders')) || [];
+  orders.push({
+    username: user.username,
+    product: product.name,
+    price: product.price,
+    quantity: product.quantity,
+    total: product.price * product.quantity,
+    email: user.email,
+    contact: user.contact,
+    address: user.address,
+    date: new Date().toLocaleDateString()
+  });
+  localStorage.setItem('orders', JSON.stringify(orders));
+  localStorage.removeItem('cart');
+  alert(`Thank you ${user.username}! Order placed successfully.`);
+  window.location.href='prodcuts.html';
+}
+
+function cancelOrder(){
+  localStorage.removeItem('cart');
+  alert('Order cancelled!');
+  window.location.href='prodcuts.html';
+}
+</script>
+
+</body>
+</html>

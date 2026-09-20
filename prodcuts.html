@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Semicon | Products</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+<link rel="stylesheet" href="css/style.css">
+
+body{margin:0;font-family:Arial,sans-serif;background:#f2f5fa;}
+.products-section{max-width:1200px;margin:20px auto;padding:0 15px;}
+.product-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;}
+.product-card{background:#fff;padding:15px;border-radius:12px;box-shadow:0 5px 15px rgba(0,0,0,0.1);text-align:center;transition:0.3s;}
+.product-card:hover{transform:translateY(-5px);box-shadow:0 8px 25px rgba(0,0,0,0.2);}
+.product-card img{width:100%;height:160px;object-fit:cover;border-radius:10px;margin-bottom:10px;}
+.product-card button{padding:12px 25px;border:none;border-radius:25px;font-size:16px;cursor:pointer;background:#0072ff;color:white;transition:0.3s;margin-top:5px;}
+.product-card button:hover{background:#005fcc;}
+.quantity-input{width:60px;padding:5px;margin-top:5px;border-radius:8px;border:1px solid #ccc;}
+.category-grid{display:flex;flex-wrap:wrap;gap:20px;justify-content:center;max-width:1200px;margin:20px auto;padding:0 15px;}
+.category-card{flex:0 0 280px;background:#fff;padding:40px 20px;border-radius:12px;box-shadow:0 5px 15px rgba(0,0,0,0.1);text-align:center;cursor:pointer;transition:0.3s;}
+.category-card.active{border:3px solid #0072ff;}
+.category-card:hover{transform:translateY(-5px);box-shadow:0 8px 25px rgba(0,0,0,0.2);}
+.category-card h3{margin:0;font-size:22px;color:#0072ff;}
+@media(max-width:768px){.category-card{flex:0 0 45%;}.product-card{max-width:100%;}}
+@media(max-width:480px){.category-card{flex:0 0 90%;}}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<nav class="navbar">
+<h2>Semicon</h2>
+<ul>
+<li><a href="index.html">Home</a></li>
+<li><a href="about.html">About</a></li>
+<li><a href="prodcuts.html">Products</a></li>
+<li><a href="contact.html">Contact</a></li>
+<li><a href="feedback.html">Feedback</a></li>
+<li><a href="cart.html">Cart</a></li>
+<li><a href="logout.html">Logout</a></li>
+</ul>
+</nav>
+
+<!-- HERO -->
+  <section class="hero" style="background: url('images/products-banner.jpg') center/cover no-repeat;">
+    <div class="hero-content">
+      <h1>Advanced Semiconductor Technology</h1>
+      
+      
+    </div>
+  </section>
+
+
+<!-- CATEGORY BOXES -->
+<section class="category-grid" id="categoryGrid">
+<div class="category-card active" data-category="all"><h3>All Products</h3></div>
+<div class="category-card" data-category="IC"><h3>Integrated Circuits</h3></div>
+<div class="category-card" data-category="Processor"><h3>Processors</h3></div>
+<div class="category-card" data-category="Sensor"><h3>Sensors</h3></div>
+<div class="category-card" data-category="Power"><h3>Power Modules</h3></div>
+</section>
+
+<!-- PRODUCT GRID -->
+<section class="products-section">
+<div class="product-grid" id="productGrid"></div>
+</section>
+
+<!-- FOOTER -->
+<footer style="text-align:center;padding:15px;background:#0072ff;color:white;">© 2026 Semicon Technologies. All Rights Reserved.</footer>
+
+<script>
+// ===== Products Data =====
+const products = [];
+for(let i=1;i<=12;i++) products.push({name:`IC Product ${i}`,category:'IC',price:450+i*10,image:`images/IC/ic${i}.jpg`});
+for(let i=1;i<=12;i++) products.push({name:`Processor ${i}`,category:'Processor',price:600+i*10,image:`images/Processor/proc${i}.jpg`});
+for(let i=1;i<=13;i++) products.push({name:`Sensor ${i}`,category:'Sensor',price:700+i*10,image:`images/Sensor/sensor${i}.jpg`});
+for(let i=1;i<=13;i++) products.push({name:`Power Module ${i}`,category:'Power',price:800+i*10,image:`images/Power/power${i}.jpg`});
+
+const grid = document.getElementById('productGrid');
+
+// ===== Display Products =====
+function displayProducts(category){
+grid.innerHTML='';
+const filtered = category==='all'?products:products.filter(p=>p.category===category);
+filtered.forEach(product=>{
+  const card=document.createElement('div');
+  card.className='product-card';
+  card.innerHTML=`
+    <img src="${product.image}" alt="${product.name}">
+    <h3>${product.name}</h3>
+    <p>Price: ₹${product.price}</p>
+    <input type="number" class="quantity-input" value="1" min="1">
+    <button onclick='addToCart(${JSON.stringify(product)}, this.previousElementSibling.value)'>Add to Cart</button>
+  `;
+  grid.appendChild(card);
+});
+}
+
+
+// ===== Initial Display =====
+displayProducts('all');
+
+// ===== Category Filter =====
+document.querySelectorAll('.category-card').forEach(card=>{
+card.addEventListener('click',()=>{
+document.querySelectorAll('.category-card').forEach(c=>c.classList.remove('active'));
+card.classList.add('active');
+displayProducts(card.dataset.category);
+});
+});
+
+// ===== Add to Cart =====
+function addToCart(product, quantity){
+  let cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const prod = {...product, quantity: Number(quantity)};
+  cart.push(prod);
+  localStorage.setItem('cart', JSON.stringify(prod)); // store single product for cart page
+  alert('Added to cart!');
+  window.location.href='cart.html';
+}
+</script>
+
+</body>
+</html>

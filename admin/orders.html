@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Dashboard | Orders</title>
+<link rel="stylesheet" href="admin-style.css">
+</head>
+<body onload="checkAdmin(); loadOrdersTable()">
+
+<!-- ADMIN HEADER -->
+<nav class="navbar">
+  <h2>Admin Panel</h2>
+  <div class="nav-links">
+    <a href="../index.html" target="_blank">Client Home</a>
+    <a href="registered-users.html">Registered Users</a>
+    <a href="login-history.html">Login History</a>
+    <a href="orders.html">Orders</a>
+    <a href="admin.html">Products</a>
+    <button onclick="adminLogout()">Logout</button>
+  </div>
+</nav>
+
+<!-- ORDERS TABLE -->
+<div class="box">
+  <h3>Orders / Purchases</h3>
+  <table id="orderTable">
+    <tr><th>User</th><th>Product</th><th>Price</th><th>Date</th></tr>
+  </table>
+</div>
+
+<script>
+function loadOrdersTable() {
+  // Get orders from localStorage
+  let orders = JSON.parse(localStorage.getItem("orders")) || [];
+  const table = document.getElementById("orderTable");
+
+  // Reset table header
+  table.innerHTML = "<tr><th>User</th><th>Product</th><th>Price</th><th>Date</th></tr>";
+
+  // Fill table with each order
+  orders.forEach(o => {
+    table.innerHTML += `<tr>
+      <td>${o.username}</td>
+      <td>${o.product}</td>
+      <td>₹${o.total || o.price}</td>
+      <td>${o.date}</td>
+    </tr>`;
+  });
+}
+</script>
+
+<script src="admin.js"></script>
+</body>
+</html>

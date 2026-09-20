@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Semicon | Feedback</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body onload="showProfile()">
+
+
+  <nav class="navbar">
+  <h2>Semicon</h2>
+
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="prodcuts.html">Products</a></li>
+    <li><a href="contact.html">Contact</a></li>
+    <li><a href="feedback.html">Feedback</a></li>
+    <li><a href="cart.html">Cart</a></li>
+    <li><a href="logout.html">Logout</a></li>
+  
+
+  </ul>
+</nav>
+
+
+  <!-- HERO -->
+  <section class="feedback-hero">
+    <h1>Feedback</h1>
+    <p>Your feedback helps us improve our semiconductor solutions</p>
+  </section>
+
+  <!-- FEEDBACK FORM -->
+  <section class="feedback-section">
+    <div class="feedback-card">
+      <h2>Share Your Experience</h2>
+
+      <!-- STAR RATING -->
+      <div class="rating" id="rating">
+        <span onclick="setRating(1)">★</span>
+        <span onclick="setRating(2)">★</span>
+        <span onclick="setRating(3)">★</span>
+        <span onclick="setRating(4)">★</span>
+        <span onclick="setRating(5)">★</span>
+      </div>
+
+      <form class="feedback-form" onsubmit="submitFeedback(event)">
+        <input type="text" placeholder="Your Name" required>
+        <input type="email" placeholder="Your Email" required>
+
+        <select required>
+          <option value="">Select Product Type</option>
+          <option>Integrated Circuits</option>
+          <option>Processors</option>
+          <option>Sensors</option>
+          <option>Power Modules</option>
+        </select>
+
+        <textarea placeholder="Write your feedback here..." required></textarea>
+
+        <button type="submit">Submit Feedback</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p>© 2026 Semicon Technologies. All Rights Reserved.</p>
+  </footer>
+
+  <script src="js/auth.js"></script>
+
+  <!-- SIMPLE JS -->
+  <script>
+    let currentRating = 0;
+
+    function setRating(value) {
+      currentRating = value;
+      const stars = document.querySelectorAll(".rating span");
+      stars.forEach((star, index) => {
+        star.classList.toggle("active", index < value);
+      });
+    }
+
+    function submitFeedback(e) {
+      e.preventDefault();
+      alert("Thank you for your feedback! ⭐ " + currentRating + "/5");
+    }
+  </script>
+
+</body>
+</html>
